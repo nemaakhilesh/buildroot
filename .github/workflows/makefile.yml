@@ -1,0 +1,27 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: dependencies
+      run: apt-get install sed make binutils build-essential gcc g++ bash patch gzip bzip2 perl tar cpio unzip rsync file bc git python3 python libncurses5-dev libssl-dev -y
+
+    - name: configure
+      run: make qemu_aarch64_ebbr_defconfig
+
+    - name: Build
+      run: make
+
+    - name: Run distcheck
+      run: ls output/image
